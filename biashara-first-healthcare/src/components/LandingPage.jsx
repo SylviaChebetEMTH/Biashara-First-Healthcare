@@ -48,7 +48,7 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen ">
-      <section className="container mx-auto mt-10 shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-[500px] border border-gray-100">
+      <section className="container mx-auto mt-10 shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row h-auto md:h-[500px] border border-gray-100 mb-10">
         <div className="flex-1 p-8 md:p-16 shadow-lg">
           <header className="flex justify-between items-center mb-4">
             <nav className="space-x-4">
@@ -66,11 +66,11 @@ const LandingPage = () => {
             <p className="text-gray-600 mt-6">
               Biashara First Healthcare offers an innovative platform that simplifies registration and connection between businesses and hospitals. Our interactive map enables businesses to easily find nearby healthcare providers, ensuring quick access to essential services. We streamline the process for businesses seeking partnerships and hospitals aiming to expand their reach.
             </p>
-            <div className="mt-8 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+            <div className="mt-2 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               <Link to="/register-business" className="download-button text-gray-800 rounded-md px-6 py-3 flex-grow text-center">
                 Register Your Business
               </Link>
-              <button className="px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 flex-grow text-center">
+              <button className="px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 w-full sm:w-auto sm:min-w-[180px] min-h-[48px]">
                 Register Your Hospital
               </button>
             </div>
