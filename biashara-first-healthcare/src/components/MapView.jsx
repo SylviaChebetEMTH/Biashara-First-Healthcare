@@ -68,7 +68,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
 
     const osmLayer = new TileLayer({
       source: new OSM(),
-      visible: !isSatellite, 
+      visible: !isSatellite,
     });
     const satelliteLayer = new TileLayer({
       source: new XYZ({
@@ -79,7 +79,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
 
     const map = new Map({
       target: "map",
-      layers: [osmLayer,satelliteLayer],
+      layers: [osmLayer, satelliteLayer],
       view: new View({
         center: fromLonLat([36.8219, -1.2921]),
         zoom: 12,
@@ -187,7 +187,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
         });
       })
       .catch((error) => console.error("Error loading business data:", error));
-      mapInstance.current = map;
+    mapInstance.current = map;
 
     map.on("pointermove", (evt) => {
       let featureFound = false;
@@ -259,13 +259,13 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   }, [setCoordinates, geojsonData, canPlacePin, showHospitals, showBusinesses, selectedHospital, isSatellite]);
   useEffect(() => {
     if (mapInstance.current) {
-      const osmLayer = mapInstance.current.getLayers().item(0); 
+      const osmLayer = mapInstance.current.getLayers().item(0);
       const satelliteLayer = mapInstance.current.getLayers().item(1);
-      
+
 
       osmLayer.setVisible(!isSatellite);
       satelliteLayer.setVisible(isSatellite);
-      
+
     }
   }, [isSatellite]);
   const updateView = (longitude, latitude) => {
@@ -473,56 +473,82 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
 
 
   return (
-    <div className="map-container relative">
-
-      <div id="map" className="h-96 w-full"></div>
-      <div ref={popupRef} className="ol-popup bg-white text-xs font-light p-2" style={{ display: "none" }}></div>
+   <div className="map-container relative w-full h-full">
+    <div id="map" className="w-full h-full"></div>
+      <div
+        ref={popupRef}
+        className="ol-popup bg-white rounded-lg shadow-xl p-3 border border-gray-200"
+        style={{ display: "none", minWidth: "150px" }}
+      ></div>
 
       <button
-        className="absolute top-2 right-4 z-20 md:hidden"
+        className="absolute top-4 right-4 z-20 md:hidden bg-white rounded-lg p-3 shadow-lg hover:shadow-xl transition-all duration-300"
         onClick={toggleMenu}
+        aria-label="Toggle menu"
       >
-        <FontAwesomeIcon icon={isOpen ? faTimes : faBars} size="lg" />
+        <FontAwesomeIcon
+          icon={isOpen ? faTimes : faBars}
+          size="lg"
+          className="text-gray-700"
+        />
       </button>
-      <div className={`absolute top-2 left-10 p-4 bg-white z-10 flex space-x-4 flex-col ${isOpen ? '' : 'hidden md:flex'}`}>
-        <div>
-          <SearchBar
-            hospitals={geojsonData}
-            businesses={businesses}
-            onSelectLocation={handleSelectLocation}
-          />
-        </div>
-        <div className="mt-2">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={showHospitals}
-              onChange={() => {
-                setShowHospitals((prev) => !prev);
-                hospitalLayer && hospitalLayer.setVisible(!showHospitals);
-              }}
+      <div className={`absolute top-4 left-4 md:left-10 bg-white rounded-xl shadow-2xl z-10 transition-all duration-300 ${isOpen ? 'p-6' : 'hidden md:p-6 md:flex md:flex-col'}`}>
+        <div className="space-y-4">
+          <div className="pb-4 border-b border-gray-200">
+            <SearchBar
+              hospitals={geojsonData}
+              businesses={businesses}
+              onSelectLocation={handleSelectLocation}
             />
-            <span>Show Hospitals</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={showBusinesses}
-              onChange={() => {
-                setShowBusinesses((prev) => !prev);
-                businessLayer && businessLayer.setVisible(!showBusinesses);
-              }}
-            />
-            <span>Show Businesses</span>
-          </label>
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={isSatellite}
-              onChange={() => setIsSatellite((prev) => !prev)}
-            />
-            <span>Satellite View</span>
-          </label>
+          </div>
+
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+              Map Layers
+            </h4>
+
+            <label className="flex items-center space-x-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={showHospitals}
+                onChange={() => {
+                  setShowHospitals((prev) => !prev);
+                  hospitalLayer && hospitalLayer.setVisible(!showHospitals);
+                }}
+                className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-gray-700 group-hover:text-blue-500 transition-colors">
+                Show Hospitals
+              </span>
+            </label>
+
+            <label className="flex items-center space-x-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={showBusinesses}
+                onChange={() => {
+                  setShowBusinesses((prev) => !prev);
+                  businessLayer && businessLayer.setVisible(!showBusinesses);
+                }}
+                className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-gray-700 group-hover:text-blue-500 transition-colors">
+                Show Businesses
+              </span>
+            </label>
+
+            <label className="flex items-center space-x-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={isSatellite}
+                onChange={() => setIsSatellite((prev) => !prev)}
+                className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <span className="text-gray-700 group-hover:text-blue-500 transition-colors">
+                Satellite View
+              </span>
+            </label>
+          </div>
         </div>
       </div>
 

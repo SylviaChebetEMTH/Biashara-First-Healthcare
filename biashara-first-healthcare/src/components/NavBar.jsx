@@ -84,26 +84,20 @@ const Navbar = () => {
               About Us
             </Link>
 
-            <Link 
-              to="/how-it-works" 
-              className="text-white hover:text-[#3dd8c8] transition-colors font-medium"
-            >
-              How It Works
-            </Link>
-
+           
             <Link 
               to="/find-hospitals" 
               className="text-white hover:text-[#3dd8c8] transition-colors font-medium"
             >
               Find Hospitals
             </Link>
-
-            <Link 
-              to="/partnerships" 
+             <Link 
+              to="/contact" 
               className="text-white hover:text-[#3dd8c8] transition-colors font-medium"
             >
-              Partnerships
+              Contact Us
             </Link>
+
 
             <div className="flex items-center gap-3">
               <Link 

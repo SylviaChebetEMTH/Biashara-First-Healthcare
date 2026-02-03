@@ -6,6 +6,7 @@ import Navbar from "./components/NavBar";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import FindHospitals from "./components/FindHospitals";
+import Contact from "./components/Contact";
 
 function AppContent() {
   return (
@@ -17,9 +18,10 @@ function AppContent() {
         <Route path="/register-business" element={<RegisterBusiness />} />
         <Route path="/about" element={<About />} />
         <Route path="/find-hospitals" element={< FindHospitals />} />
+        <Route path="/contact" element={< Contact />} />
       </Routes>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
     
   );
