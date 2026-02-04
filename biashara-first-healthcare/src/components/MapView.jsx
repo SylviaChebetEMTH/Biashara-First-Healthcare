@@ -7,13 +7,11 @@ import { fromLonLat, toLonLat } from "ol/proj";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import GeoJSON from "ol/format/GeoJSON";
-import { Style, Icon, Stroke } from "ol/style";
-import { Point, LineString } from "ol/geom";
-import { decode } from '@mapbox/polyline';
+import { Style, Icon } from "ol/style";
+import { Point } from "ol/geom";
 import Feature from "ol/Feature";
 import SearchBar from './SearchBar';
 import HospitalModal from './HospitalModal';
-import axios from 'axios';
 import XYZ from 'ol/source/XYZ';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -23,9 +21,6 @@ const hospitalsGeoJson = "/assets/Hospital_locations.geojson";
 
 // URL for the businesses route
 const businessesApiUrl = "https://backend-bfhealth.onrender.com/businesses";
-
-const ORS_API_KEY = "5b3ce3597851110001cf6248fe6ac930d4954f9eada6222989493f22";
-const ORS_API_URL_JSON = "https://api.openrouteservice.org/v2/directions/driving-car";
 
 
 const haversineDistance = (lat1, lon1, lat2, lon2) => {
@@ -53,7 +48,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [showHospitals, setShowHospitals] = useState(true);
   const [showBusinesses, setShowBusinesses] = useState(true);
-  const [routeLayer, setRouteLayer] = useState(null);
   const popupRef = useRef();
   const [isOpen, setIsOpen] = useState(false);
   const [isSatellite, setIsSatellite] = useState(false);
@@ -61,87 +55,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
-
-  const showRoute = useCallback(async (hospitalCoords) => {
-    if (!selectedBusiness) return;
-    
-    const businessCoords = [selectedBusiness.longitude, selectedBusiness.latitude];
-
-    console.log("Business coordinates:", businessCoords);
-    console.log("Hospital coordinates:", hospitalCoords);
-
-    try {
-      const response = await axios.post(
-        `${ORS_API_URL_JSON}?api_key=${ORS_API_KEY}`,
-        {
-          coordinates: [businessCoords, hospitalCoords],
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("ORS API response:", response.data);
-
-      // Check if the response has routes
-      if (!response.data || !response.data.routes || response.data.routes.length === 0) {
-        console.error("No route found in the response.");
-        return;
-      }
-
-      const route = response.data.routes[0];
-      console.log("Route object:", route);
-
-      if (!route.geometry) {
-        console.error("No geometry found in the route.");
-        return;
-      }
-
-      const decodedCoords = decode(route.geometry);
-      console.log("Decoded route coordinates:", decodedCoords);
-
-      const routeCoords = decodedCoords.map(([lat, lon]) => fromLonLat([lon, lat]));
-
-      // Create route feature and style
-      const routeFeature = new Feature({
-        geometry: new LineString(routeCoords),
-      });
-
-      const routeStyle = new Style({
-        stroke: new Stroke({
-          color: "#403343",
-          width: 4,
-        }),
-      });
-
-      routeFeature.setStyle(routeStyle);
-
-      if (routeLayer && mapRef.current) {
-        routeLayer.getSource().clear();
-        mapRef.current.removeLayer(routeLayer);
-      }
-
-      // Create a new route layer
-      const routeLayerSource = new VectorSource({
-        features: [routeFeature],
-      });
-
-      const newRouteLayer = new VectorLayer({
-        source: routeLayerSource,
-      });
-      
-      if (mapRef.current) {
-        mapRef.current.addLayer(newRouteLayer);
-        setRouteLayer(newRouteLayer);
-      }
-
-      console.log("Route displayed on map.");
-    } catch (error) {
-      console.error("Error fetching route:", error.response ? error.response.data : error.message);
-    }
-  }, [selectedBusiness, routeLayer]);
 
   useEffect(() => {
     if (mapInstance.current) return;
