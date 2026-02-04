@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBars, FaTimes, FaPhone, FaEnvelope, FaFacebookF, FaTwitter, FaInstagram, FaWhatsapp, FaLinkedinIn } from "react-icons/fa";
+import { FaBars, FaTimes, FaPhone, FaEnvelope, FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import hospitallogo from "../components/icons/YuBuntu-Logo-WpT-p-500 (1).png";
 
 const Navbar = () => {

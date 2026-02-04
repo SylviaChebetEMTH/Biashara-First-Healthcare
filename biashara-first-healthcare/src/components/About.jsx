@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faHandsHelping, 
@@ -14,9 +14,6 @@ import { Parallax } from 'react-parallax';
 import { FaArrowRight } from "react-icons/fa";
 
 const About = () => {
-  const [loading, setLoading] = useState(true);
-
-  // Team members data
   const teamMembers = [
     {
       name: "Dr. Sylvia Chebet",

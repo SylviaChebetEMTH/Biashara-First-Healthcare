@@ -3,7 +3,6 @@ import MapView from "../components/MapView";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaHospital, FaInfoCircle } from "react-icons/fa";
 
 const FindHospitals = () => {
-    const [coordinates, setCoordinates] = useState(null);
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Hero Section */}
