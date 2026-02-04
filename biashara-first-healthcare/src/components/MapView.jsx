@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import "ol/ol.css";
 import { Map, View, Overlay } from "ol";
 import TileLayer from "ol/layer/Tile";
@@ -53,7 +53,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   const [showHospitals, setShowHospitals] = useState(true);
   const [showBusinesses, setShowBusinesses] = useState(true);
   const [routeLayer, setRouteLayer] = useState(null);
-  const [selectedHospital, setSelectedHospital] = useState(null)
+  const [selectedHospital] = useState(null)
   const popupRef = useRef();
   const [isOpen, setIsOpen] = useState(false);
   const [isSatellite, setIsSatellite] = useState(false);
@@ -61,6 +61,86 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const showRoute = useCallback(async (hospitalCoords) => {
+    const businessCoords = [selectedBusiness.longitude, selectedBusiness.latitude];
+
+    console.log("Business coordinates:", businessCoords);
+    console.log("Hospital coordinates:", hospitalCoords);
+
+    try {
+      const response = await axios.post(
+        `${ORS_API_URL_JSON}?api_key=${ORS_API_KEY}`,
+        {
+          coordinates: [businessCoords, hospitalCoords],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("ORS API response:", response.data);
+
+      // Check if the response has routes
+      if (!response.data || !response.data.routes || response.data.routes.length === 0) {
+        console.error("No route found in the response.");
+        return;
+      }
+
+      const route = response.data.routes[0];
+      console.log("Route object:", route);
+
+
+      if (!route.geometry) {
+        console.error("No geometry found in the route.");
+        return;
+      }
+
+      const decodedCoords = decode(route.geometry);
+      console.log("Decoded route coordinates:", decodedCoords);
+
+
+      const routeCoords = decodedCoords.map(([lat, lon]) => fromLonLat([lon, lat]));
+
+      // Create route feature and style
+      const routeFeature = new Feature({
+        geometry: new LineString(routeCoords),
+      });
+
+      const routeStyle = new Style({
+        stroke: new Stroke({
+          color: "#FF0000",
+          width: 3,
+        }),
+      });
+
+      routeFeature.setStyle(routeStyle);
+
+
+      if (routeLayer) {
+        routeLayer.getSource().clear();
+        // Optionally remove the layer from the map if you want to recreate it
+        mapRef.current.removeLayer(routeLayer);
+      }
+
+      // Create a new route layer
+      const routeLayerSource = new VectorSource({
+        features: [routeFeature],
+      });
+
+      const newRouteLayer = new VectorLayer({
+        source: routeLayerSource,
+      });
+      mapRef.current.addLayer(newRouteLayer);
+      setRouteLayer(newRouteLayer);
+
+      console.log("Route displayed on map.");
+    } catch (error) {
+      console.error("Error fetching route:", error.response ? error.response.data : error.message);
+    }
+  }, [selectedBusiness, routeLayer]);
 
   useEffect(() => {
     // if (mapRef.current) return;
@@ -115,28 +195,28 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
           }),
         });
 
-        const hospitalLayer = new VectorLayer({
+        const hospitalVectorLayer = new VectorLayer({
           source: vectorSource,
           style: hospitalStyle,
         });
 
-        map.addLayer(hospitalLayer);
-        setHospitalLayer(hospitalLayer);
+        map.addLayer(hospitalVectorLayer);
+        setHospitalLayer(hospitalVectorLayer);
 
         // Toggle hospital layer visibility
-        hospitalLayer.setVisible(showHospitals);
+        hospitalVectorLayer.setVisible(showHospitals);
       })
       .catch((error) => {
         console.error("Error loading GeoJSON data:", error);
       });
 
     const markerSource = new VectorSource();
-    const businessLayer = new VectorLayer({
+    const businessMarkerLayer = new VectorLayer({
       source: markerSource,
     });
 
-    map.addLayer(businessLayer);
-    setBusinessLayer(businessLayer);
+    map.addLayer(businessMarkerLayer);
+    setBusinessLayer(businessMarkerLayer);
 
     if (canPlacePin) {
       map.on("click", (evt) => {
@@ -256,7 +336,8 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
     if (selectedHospital) {
       showRoute(selectedHospital);
     }
-  }, [setCoordinates, geojsonData, canPlacePin, showHospitals, showBusinesses, selectedHospital, isSatellite]);
+  // eslint-disable-next-line
+  }, [setCoordinates, geojsonData, canPlacePin, showHospitals, showBusinesses, selectedHospital, isSatellite, showRoute]);
   useEffect(() => {
     if (mapInstance.current) {
       const osmLayer = mapInstance.current.getLayers().item(0);
@@ -342,85 +423,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
     return hospitalsWithinRange;
   };
 
-  const showRoute = async (hospitalCoords) => {
-    const businessCoords = [selectedBusiness.longitude, selectedBusiness.latitude];
-
-    console.log("Business coordinates:", businessCoords);
-    console.log("Hospital coordinates:", hospitalCoords);
-
-    try {
-      const response = await axios.post(
-        `${ORS_API_URL_JSON}?api_key=${ORS_API_KEY}`,
-        {
-          coordinates: [businessCoords, hospitalCoords],
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log("ORS API response:", response.data);
-
-      // Check if the response has routes
-      if (!response.data || !response.data.routes || response.data.routes.length === 0) {
-        console.error("No route found in the response.");
-        return;
-      }
-
-      const route = response.data.routes[0];
-      console.log("Route object:", route);
-
-
-      if (!route.geometry) {
-        console.error("No geometry found in the route.");
-        return;
-      }
-
-      const decodedCoords = decode(route.geometry);
-      console.log("Decoded route coordinates:", decodedCoords);
-
-
-      const routeCoords = decodedCoords.map(([lat, lon]) => fromLonLat([lon, lat]));
-
-      // Create route feature and style
-      const routeFeature = new Feature({
-        geometry: new LineString(routeCoords),
-      });
-
-      const routeStyle = new Style({
-        stroke: new Stroke({
-          color: "#FF0000",
-          width: 3,
-        }),
-      });
-
-      routeFeature.setStyle(routeStyle);
-
-
-      if (routeLayer) {
-        routeLayer.getSource().clear();
-        // Optionally remove the layer from the map if you want to recreate it
-        mapRef.current.removeLayer(routeLayer);
-      }
-
-      // Create a new route layer
-      const routeLayerSource = new VectorSource({
-        features: [routeFeature],
-      });
-
-      const newRouteLayer = new VectorLayer({
-        source: routeLayerSource,
-      });
-      mapRef.current.addLayer(newRouteLayer);
-      setRouteLayer(newRouteLayer);
-
-      console.log("Route displayed on map.");
-    } catch (error) {
-      console.error("Error fetching route:", error.response ? error.response.data : error.message);
-    }
-  };
   const Modal = ({ isOpen, onClose, hospitals, onHospitalClick }) => {
     if (!isOpen) return null;
 

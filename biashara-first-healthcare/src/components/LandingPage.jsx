@@ -8,8 +8,9 @@ import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FaArrowRight } from "react-icons/fa";
 
 const LandingPage = () => {
-  const [coordinates, setCoordinates] = useState([0, 0]);
+  const [setCoordinates] = useState([0, 0]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const slides = [
     {
       url: "https://img.freepik.com/free-photo/little-girls-consulting-map-their-familiar-trip_23-2149373954.jpg?t=st=1729162263~exp=1729165863~hmac=ee2f4b46ea864cb59df7208544d7aef2442e073550043735075208555960c406&w=360",
