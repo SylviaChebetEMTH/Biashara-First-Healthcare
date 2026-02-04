@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-  faHandsHelping, 
-  faHeartbeat, 
-  faPeopleCarry, 
+import {
+  faHandsHelping,
+  faHeartbeat,
+  faPeopleCarry,
   faShieldAlt,
   faCheckCircle,
   faUsers,
@@ -28,9 +28,9 @@ const About = () => {
       description: "Expert in digital healthcare solutions"
     },
     {
-      name: "Dr. Emily Rodriguez",
+      name: "Dr. Dennis Mwangi",
       role: "Head of Partnerships",
-      image: "https://img.freepik.com/free-photo/pleasant-looking-serious-man-stands-profile-has-confident-expression-wears-casual-white-t-shirt_273609-16959.jpg",
+      image: "/assets/HOP.jpeg",
       description: "Building bridges between businesses and healthcare"
     },
     {
@@ -60,11 +60,11 @@ const About = () => {
               </p>
               <div className="w-12 h-0.5 bg-blue-500"></div>
             </div>
-            
+
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white text-center mb-6 leading-tight">
               About Biashara First<br />Healthcare
             </h1>
-            
+
             <p className="text-lg md:text-xl text-gray-300 text-center max-w-3xl">
               Revolutionizing healthcare connections between businesses and hospitals for a healthier tomorrow
             </p>
@@ -84,20 +84,20 @@ const About = () => {
                   Our Story
                 </p>
               </div>
-              
+
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
                 Bridging Healthcare & Business Connections
               </h2>
-              
+
               <p className="text-gray-600 text-lg leading-relaxed">
-                At Biashara First Healthcare, we recognized a critical gap in the healthcare ecosystem. 
-                Small and medium businesses struggled to find reliable healthcare partnerships, while 
+                At Biashara First Healthcare, we recognized a critical gap in the healthcare ecosystem.
+                Small and medium businesses struggled to find reliable healthcare partnerships, while
                 hospitals sought to expand their reach to the business community.
               </p>
-              
+
               <p className="text-gray-600 text-lg leading-relaxed">
-                Our platform was born from this need - a digital solution that connects businesses 
-                with nearby healthcare facilities, making healthcare accessible, efficient, and reliable 
+                Our platform was born from this need - a digital solution that connects businesses
+                with nearby healthcare facilities, making healthcare accessible, efficient, and reliable
                 for everyone in the community.
               </p>
 
@@ -146,7 +146,7 @@ const About = () => {
                   />
                 </div>
               </div>
-              
+
               {/* Floating badge */}
               <div className="absolute -bottom-8 -left-8 bg-blue-500 text-white p-6 rounded-lg shadow-xl">
                 <div className="text-3xl font-bold">7+</div>
@@ -168,8 +168,8 @@ const About = () => {
               </div>
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Our Mission</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                To bridge the gap between businesses and healthcare services, ensuring that healthcare 
-                accessibility is seamless, efficient, and reliable for everyone. We empower businesses 
+                To bridge the gap between businesses and healthcare services, ensuring that healthcare
+                accessibility is seamless, efficient, and reliable for everyone. We empower businesses
                 to make informed healthcare decisions while helping hospitals expand their reach.
               </p>
             </div>
@@ -181,8 +181,8 @@ const About = () => {
               </div>
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Our Vision</h3>
               <p className="text-gray-600 text-lg leading-relaxed">
-                To create a future where businesses can easily find and partner with healthcare providers, 
-                improving overall health outcomes for communities through collaboration and innovation. 
+                To create a future where businesses can easily find and partner with healthcare providers,
+                improving overall health outcomes for communities through collaboration and innovation.
                 We envision a healthier, more connected business ecosystem.
               </p>
             </div>
@@ -201,10 +201,10 @@ const About = () => {
               </p>
               <div className="w-12 h-0.5 bg-blue-500"></div>
             </div>
-            
+
             <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Core Values</h3>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-              We are committed to delivering exceptional services through our core values. 
+              We are committed to delivering exceptional services through our core values.
               These principles drive us to make a positive impact in the healthcare industry.
             </p>
           </div>
@@ -296,14 +296,14 @@ const About = () => {
                   Why Choose Us
                 </p>
               </div>
-              
+
               <h3 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
                 Your Trusted Healthcare Connection Platform
               </h3>
-              
+
               <p className="text-gray-600 text-lg leading-relaxed">
-                Biashara First Healthcare is more than just a platform; it's a movement aimed at 
-                creating stronger healthcare connections. We bring the power of businesses and 
+                Biashara First Healthcare is more than just a platform; it's a movement aimed at
+                creating stronger healthcare connections. We bring the power of businesses and
                 healthcare providers together for better access to care and support.
               </p>
 
@@ -372,7 +372,7 @@ const About = () => {
               </p>
               <div className="w-12 h-0.5 bg-blue-500"></div>
             </div>
-            
+
             <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Meet Our Leadership</h3>
             <p className="text-gray-600 text-lg max-w-3xl mx-auto">
               Our experienced team is dedicated to revolutionizing healthcare connections
@@ -382,18 +382,21 @@ const About = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member, index) => (
               <div key={index} className="group">
-                <div className="relative overflow-hidden rounded-xl mb-4">
+                <div className="relative overflow-hidden rounded-xl mb-4 bg-gradient-to-br from-gray-100 to-gray-200 aspect-square">
                   <img
                     src={member.image}
                     alt={member.name}
-                    className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/400x400?text=Team+Member";
+                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#020234]/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#403343]/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                     <p className="text-white text-sm">{member.description}</p>
                   </div>
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h4>
-                <p className="text-blue-500 font-medium">{member.role}</p>
+                <p className="text-[#403343] font-medium">{member.role}</p>
               </div>
             ))}
           </div>
@@ -407,7 +410,7 @@ const About = () => {
           <div className="absolute top-0 left-0 w-72 h-72 bg-blue-500 rounded-full filter blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl"></div>
         </div>
-        
+
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h3 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Transform Your Healthcare Connections?
@@ -415,7 +418,7 @@ const About = () => {
           <p className="text-lg text-gray-300 mb-12 max-w-2xl mx-auto">
             Join hundreds of businesses already benefiting from our platform
           </p>
-          
+
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <a
               href="/register-business"

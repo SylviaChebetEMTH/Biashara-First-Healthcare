@@ -99,12 +99,17 @@ const LandingPage = () => {
                 <FaArrowRight className="text-sm" />
               </Link>
 
-              <Link
+              {/* <Link
                 to="/register-hospital"
                 className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white hover:bg-white hover:text-[#020234] text-white px-8 py-4 rounded-md font-semibold transition-all duration-300"
               >
                 Register Hospital
-              </Link>
+              </Link> */}
+               <button
+                className="inline-flex items-center justify-center gap-2 bg-transparent border-2 border-white hover:bg-white hover:text-[#020234] text-white px-8 py-4 rounded-md font-semibold transition-all duration-300"
+              >
+                Register Hospital
+              </button>
             </div>
 
             {/* Slide Indicators */}
@@ -222,69 +227,64 @@ const LandingPage = () => {
 
             {/* Right side - Content */}
             <div>
-              {/* Small heading with line */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-0.5 bg-[#020234]"></div>
-                <p className="text-sm font-semibold text-gray-600">
-                  Karibu sana <span className="text-blue-500">Biashara First Healthcare</span>
-                </p>
-              </div>
+  {/* Small heading */}
+  <div className="flex items-center gap-3 mb-4">
+    <div className="w-12 h-0.5 bg-[#575656]"></div>
+    <p className="text-sm font-semibold text-gray-600">
+      Karibu sana <span className="text-blue-500">Biashara First Healthcare</span>
+    </p>
+  </div>
 
-              {/* Main heading */}
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                Driving Innovation Through Tailored Digital Solutions
-              </h2>
+  {/* Main heading */}
+  <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+    Helping Small Businesses Find Trusted Healthcare Providers Nearby
+  </h2>
 
-              {/* Description paragraphs */}
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                Imagine a platform connecting passionate healthcare providers with businesses seeking
-                quality healthcare partnerships. At Biashara First Healthcare, we blend innovation with
-                practical solutions to create connections that don't just work - they transform. From
-                intuitive registration systems to interactive maps that help you find the perfect
-                healthcare partner - we help you stand out in the healthcare marketplace.
-              </p>
+  {/* Description */}
+  <p className="text-gray-600 mb-4 leading-relaxed">
+    Biashara First Healthcare is a simple and reliable platform that connects small
+    businesses with nearby hospitals and healthcare providers. We make it easier for
+    businesses to discover healthcare services around them and build meaningful,
+    practical connections.
+  </p>
 
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                What makes us different? It's our business-first approach. We go beyond just building{' '}
-                <Link to="/hospitals" className="text-blue-500 underline hover:text-blue-600">hospitals</Link>,{' '}
-                <Link to="/partnerships" className="text-blue-500 underline hover:text-blue-600">partnerships</Link>, and{' '}
-                <Link to="/networks" className="text-blue-500 underline hover:text-blue-600">networks</Link>;
-                we build relationships. We take the time to understand your goals, challenges, and unique
-                needs - then design solutions that fit you perfectly.
-              </p>
+  <p className="text-gray-600 mb-4 leading-relaxed">
+    Whether you’re a growing business looking to support your staff or an organization
+    seeking reliable healthcare options, our platform helps you locate healthcare
+    providers based on proximity, accessibility, and relevance, all in one place.
+  </p>
 
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                And here's the kicker - our signature{' '}
-                <Link to="/consultation" className="text-blue-500 underline hover:text-blue-600">free consultation</Link>.
-                Whether you're launching your first partnership or scaling your healthcare network, our expert
-                team is here to guide you, strategize with you, and help you make smart healthcare
-                decisions - completely free.
-              </p>
+  <p className="text-gray-600 mb-8 leading-relaxed">
+    Our focus is on simplicity, trust, and impact. By bridging the gap between businesses
+    and healthcare providers, we help create healthier workplaces and stronger local
+    healthcare networks.
+  </p>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/about"
-                  className="inline-flex items-center justify-center gap-2 bg-[#020234] hover:bg-[#030350] text-white px-8 py-4 rounded-md font-semibold transition-all duration-300"
-                >
-                  Read About Us
-                  <FaArrowRight className="text-sm" />
-                </Link>
+  {/* CTA Buttons */}
+  <div className="flex flex-col sm:flex-row gap-4">
+    <Link
+      to="/about"
+      className="inline-flex items-center justify-center gap-2 bg-[#020234] hover:bg-[#030350] text-white px-8 py-4 rounded-md font-semibold transition-all duration-300"
+    >
+      Learn More About Us
+      <FaArrowRight className="text-sm" />
+    </Link>
 
-                <a
-                  href="tel:0790761708"
-                  className="inline-flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300"
-                >
-                  <div className="bg-white text-blue-500 rounded-full p-2">
-                    <FontAwesomeIcon icon={faPhone} className="text-sm" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-lg font-bold">0712345678</div>
-                    <div className="text-xs">Call Us</div>
-                  </div>
-                </a>
-              </div>
-            </div>
+    <a
+      href="tel:0712345678"
+      className="inline-flex items-center gap-3 bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300"
+    >
+      <div className="bg-white text-blue-500 rounded-full p-2">
+        <FontAwesomeIcon icon={faPhone} className="text-sm" />
+      </div>
+      <div className="text-left">
+        <div className="text-lg font-bold">0712345678</div>
+        <div className="text-xs">Call Us</div>
+      </div>
+    </a>
+  </div>
+</div>
+
           </div>
         </div>
       </section>
@@ -293,11 +293,11 @@ const LandingPage = () => {
         <div className="container mx-auto px-4">
           {/* Section Header */}
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-0.5 bg-blue-500"></div>
+            <div className="w-12 h-0.5 bg-[#575656]"></div>
             <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
               Interactive Map
             </p>
-            <div className="w-12 h-0.5 bg-blue-500"></div>
+           <div className="w-12 h-0.5 bg-[#575656]"></div>
           </div>
 
           <h3 className="text-4xl md:text-5xl font-bold text-center text-gray-900 mb-4">

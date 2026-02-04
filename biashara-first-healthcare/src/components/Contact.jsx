@@ -74,7 +74,7 @@ const Contact = () => {
     {
       icon: faPhone,
       title: "Call Us",
-      details: ["+254 712 345 678", "+254 790 761 708"],
+      details: ["+254 712 345 678", "+254 000 000 000"],
       color: "blue"
     },
     {

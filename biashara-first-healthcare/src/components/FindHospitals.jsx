@@ -3,7 +3,7 @@ import MapView from "../components/MapView";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaHospital, FaInfoCircle } from "react-icons/fa";
 
 const FindHospitals = () => {
-    const [ setCoordinates] = useState({ lat: 0, lng: 0 });
+    const [setCoordinates] = useState({ lat: 0, lng: 0 });
     return (
         <div className="min-h-screen bg-gray-50">
             {/* Hero Section */}
@@ -57,12 +57,16 @@ const FindHospitals = () => {
                             {/* Legend */}
                             <div className="flex flex-wrap gap-4 text-sm">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                                    <span className="text-gray-700">Hospitals</span>
+                                    <img src="/assets/hospital.png" alt="Hospital" className="w-6 h-6" />
+                                    <span className="text-gray-700 font-medium">Hospitals</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                                    <span className="text-gray-700">Businesses</span>
+                                    <img src="/assets/business.png" alt="Business" className="w-6 h-6" />
+                                    <span className="text-gray-700 font-medium">Businesses</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <img src="/assets/location.png" alt="Location" className="w-6 h-6" />
+                                    <span className="text-gray-700 font-medium">Your Location</span>
                                 </div>
                             </div>
                         </div>
@@ -166,9 +170,9 @@ const FindHospitals = () => {
                             for your business needs.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm">
-                            <a href="tel:+254790761708" className="flex items-center justify-center gap-2 text-[#020234] hover:text-[#3dd8c8]">
+                            <a href="tel:+25470000000" className="flex items-center justify-center gap-2 text-[#020234] hover:text-[#3dd8c8]">
                                 <FaPhone />
-                                <span>+254 790 761 708</span>
+                                <span>+254 700 000 000</span>
                             </a>
                             <a href="mailto:hello@biasharafirsthealthcare.com" className="flex items-center justify-center gap-2 text-[#020234] hover:text-[#3dd8c8]">
                                 <FaEnvelope />

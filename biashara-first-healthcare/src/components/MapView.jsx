@@ -12,6 +12,7 @@ import { Point, LineString } from "ol/geom";
 import { decode } from '@mapbox/polyline';
 import Feature from "ol/Feature";
 import SearchBar from './SearchBar';
+import HospitalModal from './HospitalModal';
 import axios from 'axios';
 import XYZ from 'ol/source/XYZ';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -53,7 +54,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   const [showHospitals, setShowHospitals] = useState(true);
   const [showBusinesses, setShowBusinesses] = useState(true);
   const [routeLayer, setRouteLayer] = useState(null);
-  const [selectedHospital] = useState(null)
   const popupRef = useRef();
   const [isOpen, setIsOpen] = useState(false);
   const [isSatellite, setIsSatellite] = useState(false);
@@ -63,6 +63,8 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   };
 
   const showRoute = useCallback(async (hospitalCoords) => {
+    if (!selectedBusiness) return;
+    
     const businessCoords = [selectedBusiness.longitude, selectedBusiness.latitude];
 
     console.log("Business coordinates:", businessCoords);
@@ -92,7 +94,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
       const route = response.data.routes[0];
       console.log("Route object:", route);
 
-
       if (!route.geometry) {
         console.error("No geometry found in the route.");
         return;
@@ -100,7 +101,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
 
       const decodedCoords = decode(route.geometry);
       console.log("Decoded route coordinates:", decodedCoords);
-
 
       const routeCoords = decodedCoords.map(([lat, lon]) => fromLonLat([lon, lat]));
 
@@ -111,17 +111,15 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
 
       const routeStyle = new Style({
         stroke: new Stroke({
-          color: "#FF0000",
-          width: 3,
+          color: "#403343",
+          width: 4,
         }),
       });
 
       routeFeature.setStyle(routeStyle);
 
-
-      if (routeLayer) {
+      if (routeLayer && mapRef.current) {
         routeLayer.getSource().clear();
-        // Optionally remove the layer from the map if you want to recreate it
         mapRef.current.removeLayer(routeLayer);
       }
 
@@ -133,8 +131,11 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
       const newRouteLayer = new VectorLayer({
         source: routeLayerSource,
       });
-      mapRef.current.addLayer(newRouteLayer);
-      setRouteLayer(newRouteLayer);
+      
+      if (mapRef.current) {
+        mapRef.current.addLayer(newRouteLayer);
+        setRouteLayer(newRouteLayer);
+      }
 
       console.log("Route displayed on map.");
     } catch (error) {
@@ -143,7 +144,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
   }, [selectedBusiness, routeLayer]);
 
   useEffect(() => {
-    // if (mapRef.current) return;
     if (mapInstance.current) return;
 
     const osmLayer = new TileLayer({
@@ -267,7 +267,6 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
         });
       })
       .catch((error) => console.error("Error loading business data:", error));
-    mapInstance.current = map;
 
     map.on("pointermove", (evt) => {
       let featureFound = false;
@@ -314,42 +313,45 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
     map.on("click", (evt) => {
       let featureFound = false;
       map.forEachFeatureAtPixel(evt.pixel, (feature) => {
-        const coordinates = evt.coordinate;
         const businessInfo = feature.get("businessInfo");
 
         if (businessInfo) {
           setSelectedBusiness(businessInfo);
-          popup.setPosition(coordinates);
-          popupRef.current.innerHTML = `
-            <strong>${businessInfo.name}</strong><br/>
-            ${businessInfo.type}
-          `;
-          popupRef.current.style.display = "block";
           featureFound = true;
         }
       });
 
-      if (!featureFound) {
+      if (!featureFound && !canPlacePin) {
         popupRef.current.style.display = "none";
       }
     });
-    if (selectedHospital) {
-      showRoute(selectedHospital);
-    }
-  // eslint-disable-next-line
-  }, [setCoordinates, geojsonData, canPlacePin, showHospitals, showBusinesses, selectedHospital, isSatellite, showRoute]);
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (mapInstance.current) {
       const osmLayer = mapInstance.current.getLayers().item(0);
       const satelliteLayer = mapInstance.current.getLayers().item(1);
 
-
       osmLayer.setVisible(!isSatellite);
       satelliteLayer.setVisible(isSatellite);
-
     }
   }, [isSatellite]);
-  const updateView = (longitude, latitude) => {
+
+  useEffect(() => {
+    if (hospitalLayer) {
+      hospitalLayer.setVisible(showHospitals);
+    }
+  }, [showHospitals, hospitalLayer]);
+
+  useEffect(() => {
+    if (businessLayer) {
+      businessLayer.setVisible(showBusinesses);
+    }
+  }, [showBusinesses, businessLayer]);
+
+  const updateView = useCallback((longitude, latitude) => {
     if (mapInstance.current) {
       const view = mapInstance.current.getView();
       view.setCenter(fromLonLat([longitude, latitude]));
@@ -360,9 +362,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
         source: markerSource,
       });
 
-
       markerSource.clear();
-
 
       const marker = new Feature({
         geometry: new Point(fromLonLat([longitude, latitude])),
@@ -377,23 +377,15 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
       });
 
       marker.setStyle(markerStyle);
-
-
       markerSource.addFeature(marker);
-
-
       mapInstance.current.addLayer(currentLocationLayer);
-
-      //  Remove the layer when needed
-      // mapInstance.current.removeLayer(currentLocationLayer);
     }
-  };
-
+  }, []);
 
   // Expose the updateView function
   useEffect(() => {
     window.updateMapView = updateView;
-  }, []);
+  }, [updateView]);
 
   const handleSelectLocation = (result) => {
     const { latitude, longitude } = result.properties || result;
@@ -423,60 +415,9 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
     return hospitalsWithinRange;
   };
 
-  const Modal = ({ isOpen, onClose, hospitals, onHospitalClick }) => {
-    if (!isOpen) return null;
-
-    const handleHospitalClick = (hospitalCoords) => {
-      // Open Google Maps Directions before closing the modal
-      const businessCoords = [selectedBusiness.latitude, selectedBusiness.longitude];
-      const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${businessCoords[0]},${businessCoords[1]}&destination=${hospitalCoords[1]},${hospitalCoords[0]}&travelmode=driving`;
-      window.open(googleMapsUrl, "_blank");
-
-      onClose();
-    };
-
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50 z-50">
-        <div className="bg-white p-4 rounded shadow-lg w-100 max-h-96 overflow-y-auto relative">
-          <button
-            onClick={onClose}
-            className="absolute top-2 right-2 p-2 bg-gray-300 rounded-md text-gray-700"
-          >
-            X
-          </button>
-          <h3 className="text-xl font-bold mb-4">Hospitals near {selectedBusiness.business_name}</h3>
-          <table className="min-w-full table-auto">
-            <thead>
-              <tr>
-                <th className="px-4 py-2">Hospital</th>
-                <th className="px-4 py-2">Distance (km)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {hospitals.map(({ hospitalFeature, distance }, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">
-                    <button
-                      onClick={() => handleHospitalClick([hospitalFeature.geometry.coordinates[0], hospitalFeature.geometry.coordinates[1]])}
-                      className="text-blue-500 hover:underline"
-                    >
-                      {hospitalFeature.properties.name}
-                    </button>
-                  </td>
-                  <td className="border px-4 py-2">{distance.toFixed(2)} km</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
-
   return (
-   <div className="map-container relative w-full h-full">
-    <div id="map" className="w-full h-full"></div>
+    <div className="map-container relative w-full h-full">
+      <div id="map" className="w-full h-full"></div>
       <div
         ref={popupRef}
         className="ol-popup bg-white rounded-lg shadow-xl p-3 border border-gray-200"
@@ -494,6 +435,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
           className="text-gray-700"
         />
       </button>
+
       <div className={`absolute top-4 left-4 md:left-10 bg-white rounded-xl shadow-2xl z-10 transition-all duration-300 ${isOpen ? 'p-6' : 'hidden md:p-6 md:flex md:flex-col'}`}>
         <div className="space-y-4">
           <div className="pb-4 border-b border-gray-200">
@@ -513,10 +455,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
               <input
                 type="checkbox"
                 checked={showHospitals}
-                onChange={() => {
-                  setShowHospitals((prev) => !prev);
-                  hospitalLayer && hospitalLayer.setVisible(!showHospitals);
-                }}
+                onChange={() => setShowHospitals((prev) => !prev)}
                 className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="text-gray-700 group-hover:text-blue-500 transition-colors">
@@ -528,10 +467,7 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
               <input
                 type="checkbox"
                 checked={showBusinesses}
-                onChange={() => {
-                  setShowBusinesses((prev) => !prev);
-                  businessLayer && businessLayer.setVisible(!showBusinesses);
-                }}
+                onChange={() => setShowBusinesses((prev) => !prev)}
                 className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500"
               />
               <span className="text-gray-700 group-hover:text-blue-500 transition-colors">
@@ -554,15 +490,15 @@ const MapView = ({ setCoordinates, center, canPlacePin = false }) => {
         </div>
       </div>
 
-      <Modal
+      {/* External Hospital Modal */}
+      <HospitalModal
         isOpen={!!selectedBusiness}
         onClose={() => setSelectedBusiness(null)}
         hospitals={getNearbyHospitals()}
-        onHospitalClick={(hospitalCoords) => showRoute(hospitalCoords)}
+        selectedBusiness={selectedBusiness}
       />
     </div>
   );
-
 };
 
 export default MapView;

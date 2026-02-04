@@ -21,7 +21,7 @@ const Navbar = () => {
             </span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-            <a href="tel:+254790761708" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
+            <a href="tel:+2547000000" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors">
               <FaPhone className="text-[#3dd8c8]" size={12} />
               <span className="text-xs md:text-sm">Call Us: +254 712 345 678</span>
             </a>
@@ -107,12 +107,18 @@ const Navbar = () => {
                 Register Business
               </Link>
 
-              <Link 
+              {/* <Link 
                 to="/register-hospital" 
                 className="bg-white hover:bg-gray-100 text-[#020234] px-5 py-2 rounded-md font-semibold transition-colors"
               >
                 Register Hospital
-              </Link>
+              </Link> */}
+               <button 
+              
+                className="bg-white hover:bg-gray-100 text-[#020234] px-5 py-2 rounded-md font-semibold transition-colors"
+              >
+                Register Hospital
+              </button>
             </div>
           </nav>
         </div>
